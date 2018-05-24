@@ -132,7 +132,11 @@ namespace BepInEx.UnityInjectorLoader
             // This assembly contains a minimal UnityInjector wrapper, that allows plug-ins to work (even if they do some reflection magic)
             // Harr harr harr...
 
-            if (new AssemblyName(args.Name).Name.ToLower() != "unityinjector")
+            string name = new AssemblyName(args.Name).Name.ToLower();
+
+            Console.WriteLine($"Getting {name}!");
+
+            if (name != "unityinjector" && name != "exini")
                 return null;
 
             return Assembly.GetExecutingAssembly();

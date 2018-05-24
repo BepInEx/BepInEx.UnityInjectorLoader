@@ -33,9 +33,6 @@
     <Reference Include="BepInEx">
       <HintPath>..\lib\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="ExIni">
-      <HintPath>..\lib\ExIni.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
@@ -45,6 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleHelper.cs" />
+    <Compile Include="ExIni\IniComment.cs" />
+    <Compile Include="ExIni\IniFile.cs" />
+    <Compile Include="ExIni\IniKey.cs" />
+    <Compile Include="ExIni\IniParser.cs" />
+    <Compile Include="ExIni\IniSection.cs" />
     <Compile Include="UnityInjectorLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnityInjector\Attributes.cs" />
