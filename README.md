@@ -20,6 +20,12 @@ All other dependencies (UnityInjector API, ExIni) are bundled in the loader.
     ; The location can be absolute or relative to the game's root folder
     ; Thus specifying `Sybaris\UnityInjector` will cause the loader to look for UnityInjector folder in Sybaris folder
     unityInjectorLocation=UnityInjector
+    
+    ; Specify the entry point of UnityInjector (assembly, type, method)
+    ; This is an example for C(O)M3D2
+    Entrypoint_AssemblyName=Assembly-CSharp
+    Entrypoint_TypeName=SceneLogo
+    Entrypoint_MethodName=Start
     ```
 3. Move UnityInjector plug-ins to the specified folder
 4. Run the game
