@@ -14,13 +14,24 @@ namespace BepInEx.UnityInjectorLoader
     public class UnityInjectorLoader : BaseUnityPlugin
     {
         private GameObject managerObject;
+        
+        public string AssemblyName => this.GetEntry("Entrypoint-AssemblyName", "Assembly-CSharp");
+        public string TypeName => this.GetEntry("Entrypoint-TypeName", "SceneLogo");
+        public string MethodName => this.GetEntry("Entrypoint-MethodName", "Start");
 
         public UnityInjectorLoader()
         {
             AppDomain.CurrentDomain.AssemblyResolve += ResolveUnityInjector;
+
+            Hooks.SubscribedAction = Init;
+
+            Hooks.HookedMethod = Hooks.GetNamedType(AssemblyName, TypeName)?.GetMethod(MethodName,
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+
+            Hooks.InstallHooks();
         }
 
-        public void Start()
+        public void Init()
         {
             DontDestroyOnLoad(this);
             Application.logMessageReceived += OnLogReceived;
