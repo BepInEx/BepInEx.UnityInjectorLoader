@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using BepInEx.Logging;
 using Harmony;
 
 namespace BepInEx.UnityInjectorLoader
@@ -24,7 +25,7 @@ namespace BepInEx.UnityInjectorLoader
 
             if (HookedMethod == null)
             {
-                BepInLogger.Log("[Unity Injector Loader] Unable to find hook!", true, ConsoleColor.Red);
+                Logger.Log(LogLevel.Fatal, "[Unity Injector Loader] Unable to find hook!");
             }
             
             harmony.Patch(
