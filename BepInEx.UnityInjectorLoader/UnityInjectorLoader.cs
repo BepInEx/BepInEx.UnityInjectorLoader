@@ -71,41 +71,38 @@ namespace BepInEx.UnityInjectorLoader
 
             foreach (string pluginDll in Directory.GetFiles(Extensions.UnityInjectorPath, "*.dll"))
             {
-                Assembly pluginAssembly;
                 try
                 {
-                    pluginAssembly = Assembly.LoadFile(pluginDll);
+                    Assembly pluginAssembly = Assembly.LoadFile(pluginDll);
+                    foreach (Type type in pluginAssembly.GetTypes())
+                    {
+                        if (type.IsAbstract || type.IsInterface || !typeof(PluginBase).IsAssignableFrom(type))
+                            continue;
+
+                        PluginFilterAttribute[] filterAttributes =
+                                (PluginFilterAttribute[])type.GetCustomAttributes(typeof(PluginFilterAttribute), false);
+
+                        if (filterAttributes.Length == 0
+                            || filterAttributes.Select(attr => attr.ExeName)
+                                               .Contains(currentProcess, StringComparer.InvariantCultureIgnoreCase))
+                        {
+                            plugins.Add(type);
+
+                            PluginNameAttribute name =
+                                    type.GetCustomAttributes(typeof(PluginNameAttribute), false).FirstOrDefault() as
+                                            PluginNameAttribute;
+
+                            PluginVersionAttribute version =
+                                    type.GetCustomAttributes(typeof(PluginVersionAttribute), false).FirstOrDefault() as
+                                            PluginVersionAttribute;
+
+                            Logger.Log(LogLevel.Info, $"UnityInjector: loaded {name?.Name ?? pluginAssembly.GetName().Name} {version?.Version ?? pluginAssembly.GetName().Version.ToString()}");
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
                     Logger.Log(LogLevel.Error, $"Failed to load {pluginDll}. Stack trace:\n{e}");
-                    continue;
-                }
-
-                foreach (Type type in pluginAssembly.GetTypes())
-                {
-                    if (type.IsAbstract || type.IsInterface || !typeof(PluginBase).IsAssignableFrom(type))
-                        continue;
-
-                    PluginFilterAttribute[] filterAttributes =
-                            (PluginFilterAttribute[]) type.GetCustomAttributes(typeof(PluginFilterAttribute), false);
-
-                    if (filterAttributes.Length == 0
-                        || filterAttributes.Select(attr => attr.ExeName)
-                                           .Contains(currentProcess, StringComparer.InvariantCultureIgnoreCase))
-                    {
-                        plugins.Add(type);
-
-                        PluginNameAttribute name =
-                                type.GetCustomAttributes(typeof(PluginNameAttribute), false).FirstOrDefault() as
-                                        PluginNameAttribute;
-
-                        PluginVersionAttribute version =
-                                type.GetCustomAttributes(typeof(PluginVersionAttribute), false).FirstOrDefault() as
-                                        PluginVersionAttribute;
-
-                        Logger.Log(LogLevel.Info, $"UnityInjector: loaded {name?.Name ?? pluginAssembly.GetName().Name} {version?.Version ?? pluginAssembly.GetName().Version.ToString()}");
-                    }
                 }
             }
 
