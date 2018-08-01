@@ -136,11 +136,7 @@ namespace BepInEx.UnityInjectorLoader
             // Harr harr harr...
 
             string name = new AssemblyName(args.Name).Name.ToLower();
-
-            if (name != "unityinjector" && name != "exini")
-                return null;
-
-            return Assembly.GetExecutingAssembly();
+            return name != "unityinjector" ? null : Assembly.GetExecutingAssembly();
         }
     }
 }
