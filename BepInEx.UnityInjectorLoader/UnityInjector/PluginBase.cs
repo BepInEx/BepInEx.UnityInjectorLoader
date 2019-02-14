@@ -4,34 +4,34 @@ using UnityEngine;
 
 namespace UnityInjector
 {
-    public class PluginBase : MonoBehaviour
-    {
-        private IniFile preferences;
+	public class PluginBase : MonoBehaviour
+	{
+		private IniFile preferences;
 
-        public string ConfigPath => Path.Combine(DataPath, $"{Name.Asciify()}.ini");
-        public string DataPath => Extensions.UserDataPath;
-        public string Name => GetType().Name;
-        public IniFile Preferences => preferences ?? (preferences = ReloadConfig());
+		public string ConfigPath => Path.Combine(DataPath, $"{Name.Asciify()}.ini");
+		public string DataPath => Extensions.UserDataPath;
+		public string Name => GetType().Name;
+		public IniFile Preferences => preferences ?? (preferences = ReloadConfig());
 
 
-        protected IniFile ReloadConfig()
-        {
-            if (!File.Exists(ConfigPath))
-                return preferences ?? new IniFile();
+		protected IniFile ReloadConfig()
+		{
+			if (!File.Exists(ConfigPath))
+				return preferences ?? new IniFile();
 
-            IniFile ini = IniFile.FromFile(ConfigPath);
+			var ini = IniFile.FromFile(ConfigPath);
 
-            if (preferences == null)
-                preferences = ini;
+			if (preferences == null)
+				preferences = ini;
 
-            preferences.Merge(ini);
+			preferences.Merge(ini);
 
-            return preferences;
-        }
+			return preferences;
+		}
 
-        protected void SaveConfig()
-        {
-            Preferences.Save(ConfigPath);
-        }
-    }
+		protected void SaveConfig()
+		{
+			Preferences.Save(ConfigPath);
+		}
+	}
 }
