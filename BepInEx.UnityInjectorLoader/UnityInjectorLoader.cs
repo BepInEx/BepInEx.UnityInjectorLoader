@@ -20,8 +20,12 @@ namespace BepInEx.UnityInjectorLoader
         public string TypeName => this.GetEntry("Entrypoint-TypeName", "SceneLogo");
         public string MethodName => this.GetEntry("Entrypoint-MethodName", "Start");
 
+        internal new static ManualLogSource Logger;
+
         public UnityInjectorLoader()
         {
+            Logger = base.Logger;
+
             AppDomain.CurrentDomain.AssemblyResolve += ResolveUnityInjector;
 
             Hooks.SubscribedAction = Init;
@@ -46,7 +50,7 @@ namespace BepInEx.UnityInjectorLoader
 
             if (!Directory.Exists(Extensions.UnityInjectorPath))
             {
-                Logger.Log(LogLevel.Info, $"No UnityInjector path found in {Extensions.UnityInjectorPath}. Creating one...");
+                Logger.LogInfo($"No UnityInjector path found in {Extensions.UnityInjectorPath}. Creating one...");
                 try
                 {
                     Directory.CreateDirectory(Extensions.UnityInjectorPath);
@@ -54,7 +58,7 @@ namespace BepInEx.UnityInjectorLoader
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Fatal, $"Failed to create UnityInjector folder! Error message: {e.Message}");
+                    Logger.LogFatal($"Failed to create UnityInjector folder! Error message: {e.Message}");
                 }
 
                 Destroy(this);
@@ -63,7 +67,7 @@ namespace BepInEx.UnityInjectorLoader
 
             managerObject = new GameObject("UnityInjector");
 
-            Logger.Log(LogLevel.Info, "UnityInjector started");
+            Logger.LogInfo("UnityInjector started");
 
             string currentProcess = Process.GetCurrentProcess().ProcessName;
 
@@ -96,19 +100,19 @@ namespace BepInEx.UnityInjectorLoader
                                     type.GetCustomAttributes(typeof(PluginVersionAttribute), false).FirstOrDefault() as
                                             PluginVersionAttribute;
 
-                            Logger.Log(LogLevel.Info, $"UnityInjector: loaded {name?.Name ?? pluginAssembly.GetName().Name} {version?.Version ?? pluginAssembly.GetName().Version.ToString()}");
+                            Logger.LogInfo($"UnityInjector: loaded {name?.Name ?? pluginAssembly.GetName().Name} {version?.Version ?? pluginAssembly.GetName().Version.ToString()}");
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, $"Failed to load {pluginDll}. Stack trace:\n{e}");
+                    Logger.LogError($"Failed to load {pluginDll}. Stack trace:\n{e}");
                 }
             }
 
             if (plugins.Count == 0)
             {
-                Logger.Log(LogLevel.Info, "UnityInjector: No plugins found!");
+                Logger.LogInfo("UnityInjector: No plugins found!");
                 Destroy(managerObject);
                 Destroy(this);
                 return;
@@ -121,10 +125,10 @@ namespace BepInEx.UnityInjectorLoader
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, $"UnityInjector: Failed to initialize {plugin.Assembly.GetName().Name}\nError: {e}");
+                    Logger.LogError($"UnityInjector: Failed to initialize {plugin.Assembly.GetName().Name}\nError: {e}");
                 }
 
-            Logger.Log(LogLevel.Info, "UnityInjector: All plugins loaded");
+            Logger.LogInfo("UnityInjector: All plugins loaded");
 
             managerObject.SetActive(true);
         }
