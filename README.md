@@ -4,14 +4,14 @@ This is UnityInjector loader for [BepInEx](https://github.com/BepInEx/BepInEx).
 
 ## Requirements
 
-* BepInEx 4.0+
+* BepInEx 5.0+
 
 All other dependencies (UnityInjector API, ExIni) are bundled in the loader.
 
 ## Installation
 
 0. Install BepInEx [BepInEx](https://github.com/BepInEx/BepInEx/releases)
-1. Put `BepInEx.UnityInjectorLoader.dll` into `BepInEx` folder
+1. Put `BepInEx.UnityInjectorLoader.dll` and `ExIni.dll` into `BepInEx/plugins/BepInEx.UnityInjectorLoader` folder
 2. Add and **modify** the following configuration options in `BepInEx\config.ini`:
     
     ```ini
