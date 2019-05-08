@@ -31,7 +31,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <Private>False</Private>
       <HintPath>..\lib\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using UnityEngine;
 using UnityInjector;
@@ -17,19 +18,22 @@ namespace BepInEx.UnityInjectorLoader
 		internal new static ManualLogSource Logger;
 		private GameObject managerObject;
 
-		public string AssemblyName => this.GetEntry("Entrypoint-AssemblyName", "Assembly-CSharp");
-		public string TypeName => this.GetEntry("Entrypoint-TypeName", "SceneLogo");
-		public string MethodName => this.GetEntry("Entrypoint-MethodName", "Start");
+		public ConfigWrapper<string> AssemblyName, TypeName, MethodName, UnityInjectorLocation;
 
 		public UnityInjectorLoader()
 		{
+			AssemblyName = Config.Wrap("Entrypoint", "Assembly", "The name of a game DLL that should be the entry point of UnityInjector", "Assembly-CSharp");
+			TypeName = Config.Wrap("Entrypoint", "Type", "The name of the type inside Assembly that should be the entry point", "SceneLogo");
+			MethodName = Config.Wrap("Entrypoint", "Method", "The name of the method inside Type that should be the entry point", "Start");
+			UnityInjectorLocation = Config.Wrap("Paths", "UnityInjector", "Location of UnityInjector folder relative to game root\nCan be an absolute path", "UnityInjector");
+
 			Logger = base.Logger;
 
 			AppDomain.CurrentDomain.AssemblyResolve += ResolveUnityInjector;
 
 			Hooks.SubscribedAction = Init;
 
-			Hooks.HookedMethod = Hooks.GetNamedType(AssemblyName, TypeName)?.GetMethod(MethodName,
+			Hooks.HookedMethod = Hooks.GetNamedType(AssemblyName.Value, TypeName.Value)?.GetMethod(MethodName.Value,
 				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
 
 			Hooks.InstallHooks();
@@ -39,13 +43,7 @@ namespace BepInEx.UnityInjectorLoader
 		{
 			DontDestroyOnLoad(this);
 
-			if (!this.HasEntry("unityInjectorLocation"))
-			{
-				this.SetEntry("unityInjectorLocation", "UnityInjector");
-				Config.SaveConfig();
-			}
-
-			Extensions.UnityInjectorPath = this.GetEntry("unityInjectorLocation");
+			Extensions.UnityInjectorPath = UnityInjectorLocation.Value;
 
 			if (!Directory.Exists(Extensions.UnityInjectorPath))
 			{

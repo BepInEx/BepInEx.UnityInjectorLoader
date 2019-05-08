@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using BepInEx.Logging;
-using Harmony;
+using HarmonyLib;
 
 namespace BepInEx.UnityInjectorLoader
 {
@@ -23,15 +23,14 @@ namespace BepInEx.UnityInjectorLoader
 
 		public static void InstallHooks()
 		{
-			var harmony = HarmonyInstance.Create("org.bepinex.plugins.unityinjectorloader");
+			var harmony = new Harmony("org.bepinex.plugins.unityinjectorloader");
 
 			if (HookedMethod == null)
 				UnityInjectorLoader.Logger.Log(LogLevel.Fatal, "[Unity Injector Loader] Unable to find hook!");
 
 			harmony.Patch(
 				HookedMethod,
-				new HarmonyMethod(typeof(Hooks).GetMethod("LoadSceneHook", BindingFlags.Static | BindingFlags.Public)),
-				null);
+				new HarmonyMethod(typeof(Hooks).GetMethod("LoadSceneHook", BindingFlags.Static | BindingFlags.Public)));
 		}
 
 		public static void LoadSceneHook()
