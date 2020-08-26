@@ -4,7 +4,7 @@ This is UnityInjector loader for [BepInEx](https://github.com/BepInEx/BepInEx).
 
 ## Requirements
 
-* BepInEx 5.0 RC1 or newer
+* BepInEx 5.3 or newer
 
 All other dependencies (UnityInjector API, ExIni) are bundled in the loader.
 
