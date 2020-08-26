@@ -18,14 +18,14 @@ namespace BepInEx.UnityInjectorLoader
 		internal new static ManualLogSource Logger;
 		private GameObject managerObject;
 
-		public ConfigWrapper<string> AssemblyName, TypeName, MethodName, UnityInjectorLocation;
+		internal static ConfigEntry<string> AssemblyName, TypeName, MethodName, UnityInjectorLocation;
 
 		public UnityInjectorLoader()
 		{
-			AssemblyName = Config.Wrap("Entrypoint", "Assembly", "The name of a game DLL that should be the entry point of UnityInjector", "Assembly-CSharp");
-			TypeName = Config.Wrap("Entrypoint", "Type", "The name of the type inside Assembly that should be the entry point", "SceneLogo");
-			MethodName = Config.Wrap("Entrypoint", "Method", "The name of the method inside Type that should be the entry point", "Start");
-			UnityInjectorLocation = Config.Wrap("Paths", "UnityInjector", "Location of UnityInjector folder relative to game root\nCan be an absolute path", "UnityInjector");
+			AssemblyName = Config.Bind("Entrypoint", "Assembly", "Assembly-CSharp", "The name of a game DLL that should be the entry point of UnityInjector");
+			TypeName = Config.Bind("Entrypoint", "Type", "SceneLogo", "The name of the type inside Assembly that should be the entry point");
+			MethodName = Config.Bind("Entrypoint", "Method", "Start", "The name of the method inside Type that should be the entry point");
+			UnityInjectorLocation = Config.Bind("Paths", "UnityInjector", "UnityInjector", "Location of UnityInjector folder relative to game root\nCan be an absolute path");
 
 			Logger = base.Logger;
 
@@ -134,8 +134,20 @@ namespace BepInEx.UnityInjectorLoader
 			// This assembly contains a minimal UnityInjector wrapper, that allows plug-ins to work (even if they do some reflection magic)
 			// Harr harr harr...
 
-			string name = new AssemblyName(args.Name).Name.ToLower();
-			return name != "unityinjector" ? null : Assembly.GetExecutingAssembly();
+			var assName = new AssemblyName(args.Name);
+			string name = assName.Name.ToLower();
+			if (name == "unityinjector")
+				return Assembly.GetExecutingAssembly();
+
+			try
+			{
+				var fileName = Path.Combine(UnityInjectorLocation.Value, $"{assName.Name}.dll");
+				return Assembly.LoadFile(fileName);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 	}
 }
