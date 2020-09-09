@@ -43,7 +43,7 @@ namespace BepInEx.UnityInjectorLoader
 		{
 			DontDestroyOnLoad(this);
 
-			Extensions.UnityInjectorPath = UnityInjectorLocation.Value;
+			Extensions.UnityInjectorPath = Path.GetFullPath(UnityInjectorLocation.Value);
 
 			if (!Directory.Exists(Extensions.UnityInjectorPath))
 			{
