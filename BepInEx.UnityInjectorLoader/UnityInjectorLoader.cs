@@ -110,7 +110,7 @@ namespace BepInEx.UnityInjectorLoader
 				Logger.LogInfo("UnityInjector: No plugins found!");
 				//Destroy(managerObject);
 				//Destroy(this);
-				return;
+				//return;
 			}
 
 			foreach (var plugin in plugins)
