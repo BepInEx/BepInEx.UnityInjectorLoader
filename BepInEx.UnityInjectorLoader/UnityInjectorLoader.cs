@@ -108,8 +108,8 @@ namespace BepInEx.UnityInjectorLoader
 			if (plugins.Count == 0)
 			{
 				Logger.LogInfo("UnityInjector: No plugins found!");
-				Destroy(managerObject);
-				Destroy(this);
+				//Destroy(managerObject);
+				//Destroy(this);
 				return;
 			}
 
@@ -125,6 +125,7 @@ namespace BepInEx.UnityInjectorLoader
 
 			Logger.LogInfo("UnityInjector: All plugins loaded");
 
+			DontDestroyOnLoad(managerObject);
 			managerObject.SetActive(true);
 		}
 
